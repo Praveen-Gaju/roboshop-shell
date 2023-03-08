@@ -1,5 +1,5 @@
 #Install Nginx
-yum install nginx
+yum install nginx -y
 
 #Remove the default content that web server is serving.
 rm -rf /usr/share/nginx/html/*
