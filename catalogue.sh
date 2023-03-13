@@ -1,3 +1,5 @@
+code_dir=$(pwd)
+
 #Setup NodeJS repos. Vendor is providing a script to setup the repos.
 curl -sL https://rpm.nodesource.com/setup_lts.x | bash
 
@@ -22,7 +24,7 @@ unzip /tmp/catalogue.zip
 npm install
 
 #copy configuration file.
-cp config/catalogue.service /etc/systemd/system/catalogue.service
+cp configs/catalogue.service /etc/systemd/system/catalogue.service
 
 #Load the service and start the service.
 systemctl daemon-reload
@@ -31,7 +33,7 @@ systemctl start catalogue
 
 #We need to load the schema. To load schema we need to install mongodb client.
 #To have it installed we can setup MongoDB repo and install mongodb-client
-cp config/mongodb.repo /etc/yum.repos.d/mongo.repo
+cp ${code_dir}/configs/mongodb.repo /etc/yum.repos.d/mongo.repo
 yum install mongodb-org-shell -y
 
 #Load Schema
