@@ -60,7 +60,7 @@ schema_setup() {
 
       #Load Schema
       print_head "Loading Schema"
-      mongo --host mondodb-dev.devopspract.online </app/schema/${component}.js &>>${log_file}
+      mongo --host mongodb-dev.devopspract.online </app/schema/${component}.js &>>${log_file}
       status_check $?
 
   #to setup mysql DB
