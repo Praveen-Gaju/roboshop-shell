@@ -83,7 +83,6 @@ app_setup() {
     if [ ! -d /app ]; then
       mkdir /app &>>${log_file}
     fi
-    status_check$?
 
     #delete old content
     print_head "Deleting old content"
@@ -118,7 +117,7 @@ nodejs() {
   if [ $? -ne 0 ]; then
     useradd roboshop &>>${log_file}
   fi
-  status_check
+  status_check $?
 
   #calling roboshop user setup function
   app_setup
