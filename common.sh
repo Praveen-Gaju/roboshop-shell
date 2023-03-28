@@ -83,6 +83,7 @@ app_setup() {
     if [ ! -d /app ]; then
       mkdir /app &>>${log_file}
     fi
+    status_check $?
 
     #delete old content
     print_head "Deleting old content"
