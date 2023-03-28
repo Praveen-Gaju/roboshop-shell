@@ -60,7 +60,7 @@ schema_setup() {
 
       #Load Schema
       print_head "Loading Schema"
-      mongo --host mondodb.devopspract.online </app/schema/${component}.js &>>${log_file}
+      mongo --host mondodb-dev.devopspract.online </app/schema/${component}.js &>>${log_file}
       status_check $?
 
   #to setup mysql DB
@@ -93,6 +93,8 @@ app_setup() {
     #Download the application code to created app directory.
     print_head "Downloading the app content"
     curl -L -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>>${log_file}
+    status_check $?
+
     cd /app &>>${log_file}
 
     print_head "Extracting app content"
