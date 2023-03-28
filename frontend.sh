@@ -23,7 +23,7 @@ status_check $?
 
 #copy nginx configuration file
 print_head "Copy Nginx configuration file"
-cp ${code_dir}/configs/nginx-roboshop.conf etc/nginx/default.d/roboshop.conf &>>${log_file}
+cp ${code_dir}/configs/nginx-roboshop.conf /etc/nginx/default.d/roboshop.conf &>>${log_file}
 status_check $?
 
 #Start & Enable Nginx service
