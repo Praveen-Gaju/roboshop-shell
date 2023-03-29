@@ -15,6 +15,7 @@ status_check() {
     echo Success
     else
     echo Failure
+    echo "Read the log file ${log_file} for more information about error "
   fi
 }
 
@@ -28,16 +29,16 @@ systemd_setup() {
     sed -i -e "s/ROBOSHOP_USER_PASSWORD/${roboshop_app_password}" /etc/systemd/system/${component}.service &>>{log_file}
 
     #Load the service.
-    print_head "Reload System"
+    print_head "Reload SystemD"
     systemctl daemon-reload &>>${log_file}
     status_check $?
 
     #Start the service.
-    print_head "Enable Service"
+    print_head "Enable ${component} Service"
     systemctl enable ${component} &>>${log_file}
     status_check $?
 
-    print_head "Start Service"
+    print_head "Start ${component} Service"
     systemctl start ${component} &>>${log_file}
     status_check $?
 
@@ -46,7 +47,6 @@ systemd_setup() {
 #Schema setup
 schema_setup() {
   #to setup mongodb
-
   if [ "${schema_type}" == "mongo" ]; then
     #To have it installed we can setup MongoDB repo and install mongodb-client
       print_head "Copy MongoDB repo file"
@@ -54,7 +54,7 @@ schema_setup() {
       status_check $?
 
       #Install MongoDB shell
-      print_head "Installing MongoDB"
+      print_head "Installing Mongo client"
       yum install mongodb-org-shell -y &>>${log_file}
       status_check $?
 
@@ -64,22 +64,30 @@ schema_setup() {
       status_check $?
 
   #to setup mysql DB
-
   elif [ "${schema_type}" == "mysql" ]; then
     #Installing mysql
-    print_head "Install Mysql Clinet"
+    print_head "Installing Mysql Clinet"
     yum install mysql -y &>>${log_file}
     status_check $?
 
     print_head "Load Schema"
-    mysql -h mysql.devopspract.online -uroot -p${mysql_root_password} < /app/schema/.sql &>>${log_file}
+    mysql -h mysql-dev.devopspract.online -uroot -p${mysql_root_password} < /app/schema/shipping.sql &>>${log_file}
+    status_check $?
   fi
 }
 
-#to create roboshop user and extracting content files
-app_setup() {
+
+app_prereq_setup() {
+    #to create roboshop user and extracting content files
+    print_head "Create Roboshop User"
+    id roboshop  &>>${log_file}
+    if [ $? -ne 0 ]; then
+      useradd roboshop &>>${log_file}
+    fi
+    status_check $?
+
     #Lets setup app directory
-    print_head "Setting up app directory"
+    print_head "Creating Application Directory"
     if [ ! -d /app ]; then
       mkdir /app &>>${log_file}
     fi
@@ -91,12 +99,11 @@ app_setup() {
     status_check $?
 
     #Download the application code to created app directory.
-    print_head "Downloading the app content"
+    print_head "Downloading app content"
     curl -L -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>>${log_file}
     status_check $?
 
-    cd /app &>>${log_file}
-
+    #Extract the App content from zip file
     print_head "Extracting app content"
     unzip /tmp/${component}.zip &>>{log_file}
     status_check $?
@@ -105,7 +112,7 @@ app_setup() {
 #NodeJS function
 nodejs() {
   #Setup NodeJS repos. Vendor is providing a script to setup the repos.
-  print_head "Setting NodeJS repo file"
+  print_head "Configuring NodeJS repo file"
   curl -sL https://rpm.nodesource.com/setup_lts.x | bash &>>${log_file}
   status_check $?
 
@@ -114,20 +121,11 @@ nodejs() {
   yum install nodejs -y &>>${log_file}
   status_check $?
 
-  #Add roboshop user
-  print_head "Creating Roboshop User"
-  id roboshop &>>{log_file}
-  if [ $? -ne 0 ]; then
-    useradd roboshop &>>${log_file}
-  fi
-  status_check $?
-
   #calling roboshop user setup function
-  app_setup
+  app_prereq_setup
 
   #Lets download the dependencies.
-  cd /app
-  print_head "Installing dependencies"
+  print_head "Installing NodeJS dependencies"
   npm install &>>{log_file}
   status_check $?
 
@@ -143,8 +141,8 @@ java() {
   yum install maven -y &>>${log_file}
   status_check $?
 
-  #calling app_setup function
-  app_setup
+  #calling app_prereq_setup fun ction
+  app_prereq_setup
 
   print_head "Downloading Dependencies & Packages"
   mvn clean package &>>${log_file}
@@ -164,7 +162,7 @@ python() {
   yum install python36 gcc python3-devel -y &>>${log_file}
   status_check $?
 
-  app_setup
+  app_prereq_setup
 
   #Lets download the dependencies.
   print_head "Downloading Dependencies"
@@ -180,9 +178,10 @@ golang() {
   yum install golang -y &>>${log_file}
   status_check $?
 
-  app_setup
+  #load app function
+  app_prereq_setup
 
-  #Downloa dependencies
+  #Download dependencies
   print_head "Downloading golang dependencies"
   go mod init dispatch &>>${log_file}
   go get &>>${log_file}
@@ -191,5 +190,4 @@ golang() {
 
   #loadthe service file
   systemd_setup
-  status_check $?
 }
