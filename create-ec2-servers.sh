@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##### Change these values ###
-ZONE_ID="Z0963802TQ39YJHM5SQJ"
+ZONE_ID="Z10378632KDOC11M5RXOI"
 DOMAIN="devopspract.online"
 SG_NAME="Allow_All"
 env=dev
