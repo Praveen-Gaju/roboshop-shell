@@ -5,15 +5,6 @@ print_head "Installing Nginx"
 yum install nginx -y &>>${log_file}
 status_check $?
 
-#Start & Enable Nginx service
-print_head "Enabaling Nginx"
-systemctl enable nginx &>>${log_file}
-status_check $?
-
-print_head "starting Nginx"
-systemctl start nginx &>>${log_file}
-status_check $?
-
 #Remove the default content that web server is serving.
 print_head "Removing default content in Web Server"
 rm -rf /usr/share/nginx/html/* &>>${log_file}
