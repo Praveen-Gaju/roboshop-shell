@@ -1,32 +1,36 @@
-
-
 source common.sh
 
-print_head "Installing nginx"
+#Install Nginx
+print_head "Installing Nginx"
 yum install nginx -y &>>${log_file}
 status_check $?
 
-print_head "Removing Old Content"
+#Remove the default content that web server is serving.
+print_head "Removing default content in Web Server"
 rm -rf /usr/share/nginx/html/* &>>${log_file}
 status_check $?
 
-print_head "Downloading Frontend Content"
+#Download the frontend content
+print_head "Downloading Frontend content"
 curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend.zip &>>${log_file}
 status_check $?
 
-print_head "Extracting Downloaded Frontend"
+#Extract the frontend content.
+print_head "Extracting and unzip the frontend content"
 cd /usr/share/nginx/html
 unzip /tmp/frontend.zip &>>${log_file}
 status_check $?
 
-print_head "Copying Nginx Config for RoboShop"
+#copy nginx configuration file
+print_head "Copy Nginx configuration file"
 cp ${code_dir}/configs/nginx-roboshop.conf /etc/nginx/default.d/roboshop.conf &>>${log_file}
 status_check $?
 
-print_head "Enabling nginx"
+#Start & Enable Nginx service
+print_head "Enabaling Nginx"
 systemctl enable nginx &>>${log_file}
 status_check $?
 
-print_head "Starting nginx"
+print_head "Restarting Nginx"
 systemctl restart nginx &>>${log_file}
 status_check $?
