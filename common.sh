@@ -50,7 +50,7 @@ schema_setup() {
   if [ "${schema_type}" == "mongo" ]; then
     #To have it installed we can setup MongoDB repo and install mongodb-client
       print_head "Copy MongoDB repo file"
-      cp "${code_dir}"/configs/mongodb.repo /etc/yum.repos.d/mongo.repo &>>${log_file}
+      cp "${code_dir}"/configs/mongodb.repo /etc/yum.repos.d/mongodb.repo &>>${log_file}
       status_check $?
 
       #Install MongoDB shell
