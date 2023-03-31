@@ -7,7 +7,7 @@ status_check $?
 
 #Remove the default content that web server is serving.
 print_head "Removing default content in Web Server"
-rm -rf /usr/share/nginx/html/* &>>${log_file}
+rm -rf /usr/share/nginx/html/*  &>>${log_file}
 status_check $?
 
 #Download the frontend content
