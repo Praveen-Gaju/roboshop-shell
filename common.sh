@@ -23,10 +23,10 @@ status_check() {
 systemd_setup() {
     #Copy user.service file to server
     print_head "Copying SystemD service file"
-    cp "${code_dir}"/configs/"${component}".service /etc/systemd/system/"${component}".service &>>${log_file}
+    cp ${code_dir}/configs/${component}.service /etc/systemd/system/${component}.service &>>${log_file}
     status_check $?
 
-    sed -i -e "s/ROBOSHOP_USER_PASSWORD/${roboshop_app_password}" /etc/systemd/system/"${component}".service &>>{log_file}
+    sed -i -e "s/ROBOSHOP_USER_PASSWORD/${roboshop_app_password}" /etc/systemd/system/${component}.service &>>{log_file}
 
     #Load the service.
     print_head "Reload SystemD"
@@ -35,11 +35,11 @@ systemd_setup() {
 
     #Start the service.
     print_head "Enable ${component} Service"
-    systemctl enable "${component}" &>>${log_file}
+    systemctl enable ${component} &>>${log_file}
     status_check $?
 
-    print_head "Start "${component}" Service"
-    systemctl start "${component}" &>>${log_file}
+    print_head "Start ${component} Service"
+    systemctl start ${component} &>>${log_file}
     status_check $?
 
 }
@@ -50,7 +50,7 @@ schema_setup() {
   if [ "${schema_type}" == "mongo" ]; then
     #To have it installed we can setup MongoDB repo and install mongodb-client
       print_head "Copy MongoDB repo file"
-      cp "${code_dir}"/configs/mongodb.repo /etc/yum.repos.d/mongodb.repo &>>${log_file}
+      cp ${code_dir}/configs/mongodb.repo /etc/yum.repos.d/mongodb.repo &>>${log_file}
       status_check $?
 
       #Install MongoDB shell
@@ -60,7 +60,7 @@ schema_setup() {
 
       #Load Schema
       print_head "Loading Schema"
-      mongo --host mongodb-dev.devopspract.online </app/schema/"${component}".js &>>${log_file}
+      mongo --host mongodb-dev.devopspract.online </app/schema/${component}.js &>>${log_file}
       status_check $?
 
   #to setup mysql DB
@@ -100,12 +100,12 @@ app_prereq_setup() {
 
     #Download the application code to created app directory.
     print_head "Downloading app content"
-    curl -L -o /tmp/"${component}".zip https://roboshop-artifacts.s3.amazonaws.com/"${component}".zip &>>${log_file}
+    curl -L -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>>${log_file}
     status_check $?
 
     #Extract the App content from zip file
     print_head "Extracting app content"
-    unzip /tmp/"${component}".zip &>>{log_file}
+    unzip /tmp/${component}.zip &>>{log_file}
     status_check $?
 }
 
@@ -146,7 +146,7 @@ java() {
 
   print_head "Downloading Dependencies & Packages"
   mvn clean package &>>${log_file}
-  mv target/"${component}"-1.0.jar "${component}".jar &>>${log_file}
+  mv target/${component}-1.0.jar ${component}.jar &>>${log_file}
   status_check $?
 
   #calling schema setup function
