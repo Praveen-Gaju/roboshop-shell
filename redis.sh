@@ -17,7 +17,7 @@ status_check $?
 
 #Update listen address from 127.0.0.1 to 0.0.0.0 in
 print_head "updating listening ports in Redis conf file"
-sed -i -e 's/127.0.0.1/0.0.0.0/ /etc/redis.conf /etc/redis/redis.conf' &>>${log_file}
+sed -i -e 's/127.0.0.1/0.0.0.0/' /etc/redis.conf /etc/redis/redis.conf &>>${log_file}
 status_check $?
 
 #Start & Enable Redis Service
