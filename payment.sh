@@ -1,10 +1,10 @@
 source common.sh
 
 roboshop_app_password=$1
-if [ -z "${roboshop_app_password]}" ]; then
+if [ -z "${roboshop_app_password}" ]; then
   echo -e "\e[31mMissing app password\e[0m"
 fi
-status_check $?
+
 
 component=payment
 python
