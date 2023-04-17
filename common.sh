@@ -134,7 +134,7 @@ nodejs() {
   schema_setup
 
   #calling System setup function
-  sys temd_setup
+  systemd_setup
 }
 
 java() {
