@@ -2,7 +2,7 @@ source common.sh
 
 roboshop_app_password=$1
 if [ -z "${roboshop_app_password}" ]; then
-  echo -e "\e[31mMissing Roboshop app password\e[0m"
+  echo -e "\e[31mMissing rabbitmq app user password argument\e[0m"
   exit 1
 fi
 
@@ -16,14 +16,9 @@ print_head "Setting up rabbitmq repos"
 curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | sudo bash &>>{log_file}
 status_check $?
 
-#Install Erlang
-print_head "Installing Erlang and Rabbitmq"
-yum install erlang -y &>>{log_file}
-status_check $?
-
 #Install RabbitMQ
-print_head "Installing Rabbitmq service"
-yum install rabbitmq-server -y &>>{log_file}
+print_head "Installing Rabbitmq & Erlang service"
+yum install rabbitmq-server erlang -y &>>{log_file}
 status_check $?
 
 #Start RabbitMQ Service
