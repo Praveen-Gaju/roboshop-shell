@@ -66,7 +66,7 @@ schema_setup() {
   #to setup mysql DB
   elif [ "${schema_type}" == "mysql" ]; then
     #Installing mysql
-    print_head "Installing Mysql Clinet"
+    print_head "Installing Mysql clinet"
     yum install mysql -y &>>${log_file}
     status_check $?
 
@@ -134,7 +134,7 @@ nodejs() {
   schema_setup
 
   #calling System setup function
-  systemd_setup
+  sys temd_setup
 }
 
 java() {
